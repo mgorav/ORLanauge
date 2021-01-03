@@ -1,0 +1,181 @@
+options {
+    LOOKAHEAD = 1;
+    FORCE_LA_CHECK = true;
+    CHOICE_AMBIGUITY_CHECK = 3;
+    OTHER_AMBIGUITY_CHECK = 2;
+    STATIC = false;
+    DEBUG_PARSER = false;
+    DEBUG_LOOKAHEAD = false;
+    DEBUG_TOKEN_MANAGER = false;
+    UNICODE_INPUT = true;
+    SUPPORT_CLASS_VISIBILITY_PUBLIC = false;
+}
+
+PARSER_BEGIN(ORParser)
+package com.gonnect.ortool.demo;
+import java.util.List;
+import java.util.ArrayList;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+import java.io.InputStream;import static java.nio.charset.StandardCharsets.UTF_8;
+public class ORParser
+{
+   public static LinearProgramming parse(String code) {
+       try {
+         InputStream stream = new ByteArrayInputStream(code.getBytes(UTF_8));
+         ORParser parser = new ORParser(stream);
+         LinearProgramming linearProgramming = parser.allLines();
+         return  linearProgramming;
+       } catch (Exception e) {
+         e.printStackTrace();
+         throw new RuntimeException(e);
+       }
+   }
+}
+
+PARSER_END(ORParser)
+
+<*> SKIP: {
+    <" " | "\t">
+}
+
+TOKEN : {
+    < ALPHANUM : (["a"-"z", "A"-"Z", "_"])+ (["0"-"9", "a"-"z", "A"-"Z", "_"])* >
+}
+TOKEN : {
+    < NUM : (["0"-"9"])+ ("." (["0"-"9"])+)?>
+}
+
+TOKEN : {
+    < NUMVAR : (<NUM> "*")? <ALPHANUM> >
+}
+
+TOKEN : {
+   < OPERA      : ( "+" | "-" ) >
+}
+
+TOKEN : {
+   < LOGICAL_OPERA      : ( ">" | ">=" | "<" | "<=" ) >
+}
+
+TOKEN : {
+   < CRLF: (["\r","\n"])+ >
+}
+
+TOKEN:
+{
+    < SOLVER: "solver:" >
+  | < VARIABLES: "variables:" >
+  | < FUNCTION_TYPE: ("maximize:" | "minimize:") >
+  | < CONSTRAINT: "constraints:" <CRLF> >
+
+}
+
+LinearProgramming allLines():
+{
+ final LinearProgramming linearProgramming;
+ List<ObjectiveFunctionTerm> objectiveFunctionTerms;
+ List<ConstraintTermContainer> constraints;
+ String solverType;
+
+}
+{
+  solverType = solverLine() <CRLF>
+  variablesLine() <CRLF>
+  objectiveFunctionTerms = objectiveFunctionLine() <CRLF>
+  constraints = constraintLines()
+  <EOF>
+  {
+   linearProgramming = new LinearProgramming(solverType);
+   linearProgramming.setObjectiveFunction(objectiveFunctionTerms);
+   linearProgramming.setConstraints(constraints);
+   return linearProgramming;
+}
+}
+
+String solverLine():
+{
+    String solverType = "";
+}
+{
+    <SOLVER>
+	token = <ALPHANUM> { solverType +=token.image; }
+
+	{
+        return solverType;
+    }
+}
+
+String variablesLine():
+{
+   String variables = "";
+}
+{
+    token = <VARIABLES> { variables +=token.image; }
+	token = <ALPHANUM> { variables +=token.image; }
+	(
+	"," {variables += ",";}
+	token = <ALPHANUM> {variables +=token.image;}
+	)*
+	{
+        return variables;
+    }
+}
+List<ObjectiveFunctionTerm> objectiveFunctionLine():
+{
+  final List<ObjectiveFunctionTerm> objectiveFunctionTerms = new ArrayList();
+  String term = "", objectiveFunctionType = "";
+}
+{
+    <FUNCTION_TYPE> {objectiveFunctionType = token.image;}
+    (token = <OPERA>  {term +=token.image;})?
+	token = <NUMVAR> { objectiveFunctionTerms.add(new ObjectiveFunctionTerm(term +=token.image, objectiveFunctionType)); }
+	(
+	token = <OPERA> {term =token.image;}
+	token = <NUMVAR> {objectiveFunctionTerms.add(new ObjectiveFunctionTerm(term +=token.image, objectiveFunctionType));}
+	)*
+	{
+    return objectiveFunctionTerms;
+}
+}
+
+List<ConstraintTermContainer> constraintLines():
+{
+  List<ConstraintTermContainer> constraints = new ArrayList();
+  ConstraintTermContainer constraint = null;
+}
+{
+    <CONSTRAINT>
+    constraint = constraintLine() {constraints.add(constraint);}
+	(
+	constraint = constraintLine() {constraints.add(constraint);}
+	)*
+	{
+    return constraints;
+    }
+}
+
+ConstraintTermContainer constraintLine():
+{
+  final List<ConstraintTerm> constraintTerms = new ArrayList();
+  String term = "", constraintName = "", constraintRelationalOperator = "", rhs = "";
+}
+{
+    <ALPHANUM> {constraintName += token.image;}
+    ":"
+    (token = <OPERA>  {term +=token.image;})?
+	token = <NUMVAR> { constraintTerms.add(new ConstraintTerm(term +=token.image)); }
+	(
+	token = <OPERA> {term =token.image;}
+	token = <NUMVAR> {constraintTerms.add(new ConstraintTerm(term +=token.image));}
+	)*
+	token = <LOGICAL_OPERA> {constraintRelationalOperator += token.image;}
+	token = <NUM>  {rhs = token.image;}
+	(<CRLF>)*
+	{
+
+    return new ConstraintTermContainer(constraintName,constraintTerms,constraintRelationalOperator,rhs);
+    }
+}
+
+
