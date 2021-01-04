@@ -9,7 +9,7 @@
         <relativePath/>
     </parent>
     <groupId>com.gonnect.ortool</groupId>
-    <artifactId>or-languge</artifactId>
+    <artifactId>or-language</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>ORToolsApplication</name>
     <description>OR Tools REST APIs</description>
