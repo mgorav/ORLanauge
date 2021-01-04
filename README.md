@@ -31,3 +31,4 @@
 ![1](./capstone-finance-project/Slide31.jpeg)
 ![1](./capstone-finance-project/Slide32.jpeg)
 ![1](./capstone-finance-project/Slide33.jpeg)
+![1](./capstone-finance-project/Slide34.jpeg)
