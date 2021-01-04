@@ -27,7 +27,7 @@ With the machinery you have right now, you see that you can create 200 Type X ve
 
 Note that you have only 40 hours per week to produce them.
 
-
+### Elevator Pitch
 
 ![1](./capstone-finance-project/Slide1.jpeg)
 ![1](./capstone-finance-project/Slide2.jpeg)
