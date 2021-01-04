@@ -4,7 +4,6 @@
 ![1](./capstone-finance-project/Slide4.jpeg)
 ![1](./capstone-finance-project/Slide5.jpeg)
 ![1](./capstone-finance-project/Slide6.jpeg)
-![1](./capstone-finance-project/Slide6.jpeg)
 ![1](./capstone-finance-project/Slide7.jpeg)
 ![1](./capstone-finance-project/Slide8.jpeg)
 ![1](./capstone-finance-project/Slide9.jpeg)
@@ -30,4 +29,5 @@
 ![1](./capstone-finance-project/Slide29.jpeg)
 ![1](./capstone-finance-project/Slide30.jpeg)
 ![1](./capstone-finance-project/Slide31.jpeg)
+![1](./capstone-finance-project/Slide32.jpeg)
 ![1](./capstone-finance-project/Slide33.jpeg)
