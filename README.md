@@ -63,3 +63,5 @@ Note that you have only 40 hours per week to produce them.
 ![1](./capstone-finance-project/Slide32.jpeg)
 ![1](./capstone-finance-project/Slide33.jpeg)
 ![1](./capstone-finance-project/Slide34.jpeg)
+![1](./capstone-finance-project/Slide35.jpeg)
+![1](./capstone-finance-project/Slide36.jpeg)
